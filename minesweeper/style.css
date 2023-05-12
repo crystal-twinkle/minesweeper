@@ -1,0 +1,22 @@
+
+.minesweeper {
+  width: 450px;
+  height: 450px;
+  margin: 25px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #A9A9A9FF;
+  border: 10px solid #2f2f2f;
+}
+
+.minesweeper__row {
+  display: flex;
+  width: 100%;
+}
+
+.minesweeper__cell {
+  width: 50px;
+  height: 50px;
+  border: 1px solid #811616;
+}
