@@ -20,11 +20,34 @@ let DELIMETER = ":";
 
 window.onload = function () {
     generateGame();
+
 }
+
+const btnNewGame = createElement('button', 'New game', 'btn-new-game');
+
+body.append(btnNewGame);
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    btnNewGame.addEventListener('click', () => {
+
+        let minesweeperQuery = document.querySelector('.minesweeper');
+        let modalQuery = document.querySelector('.modal');
+        if (modalQuery !== null) {
+            body.removeChild(modalQuery);
+        }
+        body.removeChild(minesweeperQuery);
+        field = [];
+        minesArr = []
+        generateGame()
+
+    })
+})
 
 
 function generateGame() {
 
+    cellsClicked = 0;
     const minesweeper = createElement('div', '', 'minesweeper');
 
     for (let row = 0; row < rows; row++) {
@@ -62,7 +85,7 @@ function generateMines(cell) {
 
 function clickCell(cell) {
 
-    if (gameOver || cell.classList.contains("clicked") || cell.innerText === '🔺') {
+    if (cell.classList.contains("clicked") || cell.innerText === '🔺') {
         return;
     }
 
@@ -73,7 +96,7 @@ function clickCell(cell) {
     if (minesArr.includes(cell.id)) {
         gameOver = true;
         showMines();
-        alert("GAME OVER");
+        endGame(false)
         return;
     }
 
@@ -115,7 +138,7 @@ function openPieceField(row, column) {
     }
 
     cellsClicked += 1;
-
+    console.log(cellsClicked)
 
     let countMines = countFoundMines(row, column);
 
@@ -139,15 +162,13 @@ function openPieceField(row, column) {
     }
 
     if (cellsClicked === rows * columns - minesAmount) {
-        // alert("You win!");
         gameOver = true;
+        endGame(true)
     }
-
 }
 
 function countFoundMines(row, column) {
     let countMines = 0;
-
     for (let x = -1; x <= 1; x++) {
         for (let y = -1; y <= 1; y++) {
             countMines += checkCell(row + x, column + y);
@@ -162,3 +183,17 @@ function checkCell(row, column) {
     }
     return minesArr.includes("" + row + DELIMETER + column) ? 1 : 0;
 }
+
+function endGame(youWin) {
+    let messageEndGame = youWin ? 'You win' : 'You lose';
+    const modal = createElement('div', messageEndGame, 'modal', 'hidden');
+    const crossModal = createElement('div', '❌', 'cross-modal');
+    modal.append(crossModal);
+    body.append(modal);
+    modal.classList.remove("hidden");
+
+    crossModal.addEventListener("click", () => {
+        modal.classList.add("hidden");
+    });
+}
+

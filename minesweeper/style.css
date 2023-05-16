@@ -1,3 +1,12 @@
+/*.container {*/
+/*  width: 500px;*/
+/*  height: 500px;*/
+/*  margin: 25px auto;*/
+/*  display: flex;*/
+/*  flex-wrap: wrap ;*/
+/*  background-color: #db87f1;*/
+/*  border: 10px solid #2f2f2f;*/
+/*}*/
 
 .minesweeper {
   width: 500px;
@@ -26,3 +35,36 @@
   background-color: #fae7e5;
 }
 
+.modal {
+  border: 7px solid #0c092f;
+  position: fixed;
+  width: 150px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  margin: auto;
+  z-index: 2;
+  border-radius: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 40px;
+}
+
+.cross-modal {
+  font-size: 20px;
+  position: absolute;
+  top: 10px;
+  cursor: pointer;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.btn-new-game {
+  width: 50px;
+  height: 50px;
+}
