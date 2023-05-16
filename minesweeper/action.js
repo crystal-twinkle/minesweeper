@@ -11,44 +11,92 @@ let field = [];
 let rows = 10;
 let columns = 10;
 
-let minesAmount = 20;
 let minesArr = []; // "2-2", "3-4", "2-1"
-
+let minesAmount = 15;
 let cellsClicked = 0; //goal to click all cells except the ones containing mines
 let gameOver = false;
 let DELIMETER = ":";
 
-window.onload = function () {
-    generateGame();
-
-}
-
+const header = createElement('div', '', 'header');
 const btnNewGame = createElement('button', 'New game', 'btn-new-game');
+const easyLevel = createElement('div', 'easy 10x10', 'level-text');
+const middleLevel = createElement('div', 'medium 15x15', 'level-text');
+const hardLevel = createElement('div', 'hard 25x25', 'level-text');
 
-body.append(btnNewGame);
+let chooseLevel = '';
 
+
+header.append(btnNewGame, easyLevel, middleLevel, hardLevel)
+body.append(header);
 
 document.addEventListener('DOMContentLoaded', function () {
+
     btnNewGame.addEventListener('click', () => {
-
-        let minesweeperQuery = document.querySelector('.minesweeper');
-        let modalQuery = document.querySelector('.modal');
-        if (modalQuery !== null) {
-            body.removeChild(modalQuery);
-        }
-        body.removeChild(minesweeperQuery);
-        field = [];
-        minesArr = []
-        generateGame()
-
+        deleteMinesweeper();
+        generateGame();
     })
+
+    easyLevel.addEventListener('click', () => {
+        deleteMinesweeper();
+        chooseLevel = 'easy';
+        rows = 10;
+        columns = 10;
+        minesAmount = 15;
+        generateGame();
+    })
+
+    middleLevel.addEventListener('click', () => {
+        deleteMinesweeper();
+        chooseLevel = 'middle';
+        rows = 15;
+        columns = 15;
+        minesAmount = 37;
+        generateGame();
+    })
+
+    hardLevel.addEventListener('click', () => {
+        deleteMinesweeper();
+        chooseLevel = 'hard';
+        rows = 25;
+        columns = 25;
+        minesAmount = 89;
+        generateGame();
+    })
+
 })
 
+function deleteMinesweeper() {
+    let minesweeperQuery = document.querySelector('.minesweeper');
+    let modalQuery = document.querySelector('.modal');
+    if (modalQuery !== null) {
+        body.removeChild(modalQuery);
+    }
+    body.removeChild(minesweeperQuery);
+    field = [];
+    minesArr = []
+}
 
 function generateGame() {
 
     cellsClicked = 0;
     const minesweeper = createElement('div', '', 'minesweeper');
+    minesweeper.style.width = "300px";
+    minesweeper.style.height = "300px";
+
+    if (chooseLevel === 'easy') {
+        minesweeper.style.width = "300px";
+        minesweeper.style.height = "300px";
+    }
+
+    if (chooseLevel === 'middle') {
+        minesweeper.style.width = "450px";
+        minesweeper.style.height = "450px";
+    }
+
+    if (chooseLevel === 'hard') {
+        minesweeper.style.width = "750px";
+        minesweeper.style.height = "750px";
+    }
 
     for (let row = 0; row < rows; row++) {
         let rowCells = [];
@@ -72,7 +120,9 @@ function generateGame() {
     body.append(minesweeper);
 }
 
-function generateMines(cell) {
+generateGame();
+
+function generateMines(rows, columns, minesAmount, cell) {
     for (let i = 0; i < minesAmount; i++) {
         let row = Math.floor(Math.random() * rows);
         let column = Math.floor(Math.random() * columns);
@@ -83,24 +133,24 @@ function generateMines(cell) {
     }
 }
 
-function clickCell(cell) {
+function clickCell(cellule) {
 
-    if (cell.classList.contains("clicked") || cell.innerText === '🔺') {
+    if (cellule.classList.contains("clicked") || cellule.innerText === '🔺') {
         return;
     }
 
     if (cellsClicked === 0) {
-        generateMines(cell);
+        generateMines(rows, columns, minesAmount, cellule);
     }
 
-    if (minesArr.includes(cell.id)) {
+    if (minesArr.includes(cellule.id)) {
         gameOver = true;
         showMines();
         endGame(false)
         return;
     }
 
-    let coords = cell.id.split(DELIMETER); // "0-0" -> ["0", "0"]
+    let coords = cellule.id.split(DELIMETER); // "0-0" -> ["0", "0"]
     let row = Number(coords[0]);
     let column = Number(coords[1]);
     openPieceField(row, column);
