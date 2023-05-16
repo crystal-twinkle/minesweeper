@@ -1,22 +1,28 @@
 
 .minesweeper {
-  width: 450px;
-  height: 450px;
+  width: 500px;
+  height: 500px;
   margin: 25px auto;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: #A9A9A9FF;
+  flex-wrap: wrap ;
+  background-color: #db87f1;
   border: 10px solid #2f2f2f;
 }
 
-.minesweeper__row {
-  display: flex;
-  width: 100%;
-}
-
 .minesweeper__cell {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 50px;
   height: 50px;
   border: 1px solid #811616;
+  padding: 0;
+  font-family: fantasy;
+  font-size: 30px;
 }
+
+.clicked {
+  background-color: #fae7e5;
+}
+
