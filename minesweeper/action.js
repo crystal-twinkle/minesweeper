@@ -20,21 +20,27 @@ let gameOver = false;
 let DELIMETER = ":";
 let chooseLevel = '';
 let timerId;
+let game;
+
+let audioClick = new Audio('audio/effect.mp3');
+let audioBombClick = new Audio('audio/classic_hurt.mp3');
+let audioWin = new Audio('audio/triumphal_trumpet.mp3');
+
 
 let chooseTeam = '';
 
 const container = createElement('div', '', 'container');
 
-const textContainer = createElement('div', '', 'text-container');
-let clickedContainer = createElement('div', '', 'just-container');
+const textContainer = createElement('div', '', 'texts-container');
+let clickedContainer = createElement('div', '', 'text-content');
 const clickedText = createElement('p', 'Количество кликов:', 'text');
 const clickedAmountText = createElement('p', numberClicks, 'text');
 
-let stopwatchContainer = createElement('div', '', 'just-container');
+let stopwatchContainer = createElement('div', '', 'text-content');
 const stopwatchText = createElement('p', 'Секудомер:', 'text');
 const stopwatchAmountText = createElement('p', '00 : 00', 'text');
 
-let flagContainer = createElement('div', '', 'just-container');
+let flagContainer = createElement('div', '', 'text-content');
 const flagText = createElement('p', 'Флаги:', 'text');
 const flagAmountText = createElement('p', minesAmount, 'text');
 
@@ -131,7 +137,7 @@ function deleteMinesweeper() {
 }
 
 function generateGame() {
-
+    // saveGame();
     const minesweeper = createElement('div', '', 'minesweeper');
     minesweeper.style.width = "300px";
     minesweeper.style.height = "300px";
@@ -158,8 +164,19 @@ function generateGame() {
             const cell = createElement('div', '', 'minesweeper__cell');
             cell.id = "" + row + DELIMETER + column;
             cell.addEventListener("click", () => {
-                clickCell(cell)
-            });
+                if (gameOver || cell.classList.contains("clicked") || cell.innerText === '🔺') {
+                    return;
+                }
+                (async function () {
+                    if (!minesArr.includes(cell.id)) {
+                        await audioClick.play();
+                    } else {
+                        await audioBombClick.play();
+                    }
+                    clickCell(cell);
+                })();
+            })
+
             cell.addEventListener('contextmenu', (event) => {
                 event.preventDefault();
                 setFlag(cell)
@@ -188,10 +205,6 @@ function generateMines(cell) {
 }
 
 function clickCell(cell) {
-    if (cell.classList.contains("clicked") || cell.innerText === '🔺') {
-        return;
-    }
-
     if (cellsClicked === 0) {
         generateMines(cell);
         timer();
@@ -205,12 +218,12 @@ function clickCell(cell) {
         return;
     }
 
-    numberClicks += 1;
-
-    clickedAmountText.innerText = numberClicks;
     let coords = cell.id.split(DELIMETER); // "0-0" -> ["0", "0"]
     let row = Number(coords[0]);
     let column = Number(coords[1]);
+
+    numberClicks += 1;
+    clickedAmountText.innerText = numberClicks;
     openPieceField(row, column);
 }
 
@@ -270,6 +283,8 @@ function openPieceField(row, column) {
 
     if (cellsClicked === rows * columns - minesAmount) {
         gameOver = true;
+        (async function () {
+            await audioWin.play();})();
         endGame(true);
         clearInterval(timerId)
     }
@@ -325,7 +340,7 @@ function stopTimer() {
 function teamClick() {
     let texts = document.querySelectorAll('.text');
     let minesweeperQuery = document.querySelector('.minesweeper');
-    if(chooseTeam === 'dark') {
+    if (chooseTeam === 'dark') {
         header.classList.add("header-dark");
         body.classList.add('body-dark');
         minesweeperQuery.classList.add('minesweeper-dark');
@@ -335,7 +350,7 @@ function teamClick() {
             text.classList.add("text-dark");
         }
     }
-    if(chooseTeam === 'light') {
+    if (chooseTeam === 'light') {
         header.classList.remove("header-dark");
         body.classList.remove('body-dark');
         minesweeperQuery.classList.remove('minesweeper-dark');
@@ -346,3 +361,11 @@ function teamClick() {
         }
     }
 }
+
+// function saveGame() {
+//     if (localStorage.getItem('game')) {
+//         game = localStorage.getItem('game');
+//     } else {
+//         localStorage.setItem('game', chooseLevel);
+//     }
+// }
