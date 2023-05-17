@@ -53,7 +53,7 @@ const minesAmountText = createElement('input', '', 'text-mines');
 minesAmountText.value = minesAmount;
 minesAmountText.type = 'number';
 
-const btnNewMines = createElement('button', 'for new value of mines', 'btn-new-mines');
+const btnNewMines = createElement('button', 'set mines', 'btn-new-mines');
 
 const soundContainer = createElement('div', '', 'just-container', 'sound');
 const soundText = createElement('p', 'Звук:', 'text');
@@ -363,7 +363,7 @@ function checkCell(row, column) {
 }
 
 function endGame(youWin) {
-    modalText.textContent = youWin ? 'You win!' : 'You lose';
+    modalText.textContent = youWin ? 'You win!' : 'You lose :(';
     modal.classList.remove("hidden");
 }
 
