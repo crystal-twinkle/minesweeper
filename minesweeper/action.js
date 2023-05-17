@@ -11,23 +11,52 @@ let field = [];
 let rows = 10;
 let columns = 10;
 
-let minesArr = []; // "2-2", "3-4", "2-1"
+let minesArr = [];
 let minesAmount = 15;
-let cellsClicked = 0; //goal to click all cells except the ones containing mines
+let countFlag = minesAmount;
+let cellsClicked = 0;
+let numberClicks = 0;
 let gameOver = false;
 let DELIMETER = ":";
+let chooseLevel = '';
+let timerId;
+
+const container = createElement('div', '', 'container');
+
+const textContainer = createElement('div', '', 'text-container');
+let clickedContainer = createElement('div', '', 'just-container');
+const clickedText = createElement('p', 'Количество кликов:', 'text');
+const clickedAmountText = createElement('p', numberClicks, 'text');
+
+let stopwatchContainer = createElement('div', '', 'just-container');
+const stopwatchText = createElement('p', 'Секудомер:', 'text');
+const stopwatchAmountText = createElement('p', '00 : 00', 'text');
+
+let flagContainer = createElement('div', '', 'just-container');
+const flagText = createElement('p', 'Флаги:', 'text');
+const flagAmountText = createElement('p', minesAmount, 'text');
 
 const header = createElement('div', '', 'header');
 const btnNewGame = createElement('button', 'New game', 'btn-new-game');
-const easyLevel = createElement('div', 'easy 10x10', 'level-text');
-const middleLevel = createElement('div', 'medium 15x15', 'level-text');
-const hardLevel = createElement('div', 'hard 25x25', 'level-text');
+const levelsContainer = createElement('div', '', 'just-container');
+const chooseLevelText = createElement('p', 'Choose level:', 'text');
+const easyLevel = createElement('p', 'easy 10x10;', 'text');
+const middleLevel = createElement('p', 'medium 15x15;', 'text');
+const hardLevel = createElement('p', 'hard 25x25;', 'text');
+const modal = createElement('div', '', 'modal', 'hidden');
+const modalCross = createElement('div', '❌', 'cross-modal');
+const modalText = document.createElement('p');
 
-let chooseLevel = '';
+flagContainer.append(flagText, flagAmountText);
+stopwatchContainer.append(stopwatchText, stopwatchAmountText)
+clickedContainer.append(clickedText, clickedAmountText)
+textContainer.append(clickedContainer, stopwatchContainer, flagContainer)
+container.append(textContainer);
 
-
-header.append(btnNewGame, easyLevel, middleLevel, hardLevel)
-body.append(header);
+levelsContainer.append(chooseLevelText, easyLevel, middleLevel, hardLevel);
+header.append(btnNewGame, levelsContainer)
+modal.append(modalCross, modalText);
+body.append(header, modal, container);
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -42,6 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
         rows = 10;
         columns = 10;
         minesAmount = 15;
+        flagAmountText.innerHTML = minesAmount;
         generateGame();
     })
 
@@ -51,6 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
         rows = 15;
         columns = 15;
         minesAmount = 37;
+        flagAmountText.innerHTML = minesAmount;
         generateGame();
     })
 
@@ -60,25 +91,31 @@ document.addEventListener('DOMContentLoaded', function () {
         rows = 25;
         columns = 25;
         minesAmount = 89;
+        flagAmountText.innerHTML = minesAmount;
         generateGame();
     })
+
+    modalCross.addEventListener("click", () => {
+        modal.classList.add("hidden");
+    });
 
 })
 
 function deleteMinesweeper() {
     let minesweeperQuery = document.querySelector('.minesweeper');
-    let modalQuery = document.querySelector('.modal');
-    if (modalQuery !== null) {
-        body.removeChild(modalQuery);
-    }
-    body.removeChild(minesweeperQuery);
+    container.removeChild(minesweeperQuery);
     field = [];
-    minesArr = []
+    minesArr = [];
+    numberClicks = 0;
+    cellsClicked = 0;
+    gameOver = false;
+    modal.classList.add("hidden");
+    clickedAmountText.innerText = numberClicks;
+    stopTimer();
 }
 
 function generateGame() {
 
-    cellsClicked = 0;
     const minesweeper = createElement('div', '', 'minesweeper');
     minesweeper.style.width = "300px";
     minesweeper.style.height = "300px";
@@ -117,12 +154,13 @@ function generateGame() {
         }
         field.push(rowCells);
     }
-    body.append(minesweeper);
+    container.append(minesweeper)
 }
+
 
 generateGame();
 
-function generateMines(rows, columns, minesAmount, cell) {
+function generateMines(cell) {
     for (let i = 0; i < minesAmount; i++) {
         let row = Math.floor(Math.random() * rows);
         let column = Math.floor(Math.random() * columns);
@@ -133,24 +171,28 @@ function generateMines(rows, columns, minesAmount, cell) {
     }
 }
 
-function clickCell(cellule) {
-
-    if (cellule.classList.contains("clicked") || cellule.innerText === '🔺') {
+function clickCell(cell) {
+    if (cell.classList.contains("clicked") || cell.innerText === '🔺') {
         return;
     }
 
     if (cellsClicked === 0) {
-        generateMines(rows, columns, minesAmount, cellule);
+        generateMines(cell);
+        timer();
     }
 
-    if (minesArr.includes(cellule.id)) {
+    if (minesArr.includes(cell.id)) {
         gameOver = true;
         showMines();
+        clearInterval(timerId);
         endGame(false)
         return;
     }
 
-    let coords = cellule.id.split(DELIMETER); // "0-0" -> ["0", "0"]
+    numberClicks += 1;
+
+    clickedAmountText.innerText = numberClicks;
+    let coords = cell.id.split(DELIMETER); // "0-0" -> ["0", "0"]
     let row = Number(coords[0]);
     let column = Number(coords[1]);
     openPieceField(row, column);
@@ -161,19 +203,20 @@ function showMines() {
         let coords = minesArr[i].split(DELIMETER);
         let row = parseInt(coords[0]);
         let column = parseInt(coords[1]);
-
         field[row][column].innerText = "💣";
         field[row][column].style.backgroundColor = "red";
     }
 }
 
 function setFlag(cell) {
-
+    flagAmountText.innerHTML = countFlag;
     if (cell.innerText === '🔺') {
         cell.innerText = '';
     } else if (!cell.classList.contains("clicked")) {
         cell.innerText = '🔺';
     }
+    countFlag -= 1;
+    flagAmountText.innerHTML = countFlag;
 }
 
 function openPieceField(row, column) {
@@ -186,9 +229,7 @@ function openPieceField(row, column) {
     if (field[row][column].innerText !== '🔺') {
         field[row][column].classList.add("clicked");
     }
-
     cellsClicked += 1;
-    console.log(cellsClicked)
 
     let countMines = countFoundMines(row, column);
 
@@ -213,7 +254,8 @@ function openPieceField(row, column) {
 
     if (cellsClicked === rows * columns - minesAmount) {
         gameOver = true;
-        endGame(true)
+        endGame(true);
+        clearInterval(timerId)
     }
 }
 
@@ -235,15 +277,31 @@ function checkCell(row, column) {
 }
 
 function endGame(youWin) {
-    let messageEndGame = youWin ? 'You win' : 'You lose';
-    const modal = createElement('div', messageEndGame, 'modal', 'hidden');
-    const crossModal = createElement('div', '❌', 'cross-modal');
-    modal.append(crossModal);
-    body.append(modal);
+    modalText.textContent = youWin ? 'You win!' : 'You lose';
     modal.classList.remove("hidden");
-
-    crossModal.addEventListener("click", () => {
-        modal.classList.add("hidden");
-    });
 }
 
+function timer() {
+    let time = 0;
+    timerId = setInterval(() => {
+        time += 1;
+        const minutes = Math.floor(time / 60);
+        const seconds = time % 60;
+        if (minutes < 10 && seconds < 10) {
+            stopwatchAmountText.innerHTML = `0${minutes} : 0${seconds}`;
+        } else {
+            stopwatchAmountText.innerHTML = `${minutes} : ${seconds}`;
+        }
+        if (minutes < 10 && seconds >= 10) {
+            stopwatchAmountText.innerHTML = `0${minutes} : ${seconds}`;
+        }
+        if (minutes >= 10 && seconds < 10) {
+            stopwatchAmountText.innerHTML = `${minutes} : 0${seconds}`;
+        }
+    }, 1000);
+}
+
+function stopTimer() {
+    clearInterval(timerId);
+    stopwatchAmountText.innerHTML = `00 : 00`;
+}
