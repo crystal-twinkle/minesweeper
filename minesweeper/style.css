@@ -18,6 +18,10 @@
   flex-wrap: wrap;
 }
 
+.sound {
+  margin-top: 50px;
+}
+
 .text {
   font-size: 20px;
 }
@@ -33,6 +37,11 @@ button {
   border-radius: 30px;
   font-size: 15px;
   font-weight: 700;
+  background-color: #ffffff;
+}
+
+.sound-btn {
+  width: 50px;
 }
 
 .btn-team__text {

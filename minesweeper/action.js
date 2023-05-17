@@ -21,6 +21,7 @@ let DELIMETER = ":";
 let chooseLevel = '';
 let timerId;
 let game;
+let soundOffChoose = false;
 
 let audioClick = new Audio('audio/effect.mp3');
 let audioBombClick = new Audio('audio/classic_hurt.mp3');
@@ -60,10 +61,16 @@ const modal = createElement('div', '', 'modal', 'hidden');
 const modalCross = createElement('div', '❌', 'cross-modal');
 const modalText = createElement('p', '', 'modal-text');
 
+const soundContainer = createElement('div', '', 'just-container', 'sound');
+const soundText = createElement('p', 'Звук:', 'text');
+const soundSwitch = createElement('button', 'off', 'btn-text', 'sound-btn');
+
+soundContainer.append(soundText, soundSwitch);
+
 flagContainer.append(flagText, flagAmountText);
 stopwatchContainer.append(stopwatchText, stopwatchAmountText)
 clickedContainer.append(clickedText, clickedAmountText)
-textContainer.append(clickedContainer, stopwatchContainer, flagContainer)
+textContainer.append(clickedContainer, stopwatchContainer, flagContainer, soundContainer)
 container.append(textContainer);
 
 teamContainer.append(chooseTeamText, lightTeam, darkTeam);
@@ -117,10 +124,13 @@ document.addEventListener('DOMContentLoaded', function () {
         chooseTeam = 'light'
         teamClick();
     });
+
     darkTeam.addEventListener("click", () => {
         chooseTeam = 'dark'
         teamClick()
     });
+
+    soundSwitch.addEventListener("click", soundClick);
 })
 
 function deleteMinesweeper() {
@@ -168,10 +178,12 @@ function generateGame() {
                     return;
                 }
                 (async function () {
-                    if (!minesArr.includes(cell.id)) {
-                        await audioClick.play();
-                    } else {
-                        await audioBombClick.play();
+                    if (!soundOffChoose) {
+                        if (!minesArr.includes(cell.id)) {
+                            await audioClick.play();
+                        } else {
+                            await audioBombClick.play();
+                        }
                     }
                     clickCell(cell);
                 })();
@@ -282,13 +294,21 @@ function openPieceField(row, column) {
     }
 
     if (cellsClicked === rows * columns - minesAmount) {
-        gameOver = true;
-        (async function () {
-            await audioWin.play();})();
-        endGame(true);
-        clearInterval(timerId)
+        winGame();
     }
 }
+
+function winGame() {
+    gameOver = true;
+    if (!soundOffChoose) {
+        (async function () {
+            await audioWin.play();
+        })();
+    }
+    endGame(true);
+    clearInterval(timerId)
+}
+
 
 function countFoundMines(row, column) {
     let countMines = 0;
@@ -362,10 +382,12 @@ function teamClick() {
     }
 }
 
-// function saveGame() {
-//     if (localStorage.getItem('game')) {
-//         game = localStorage.getItem('game');
-//     } else {
-//         localStorage.setItem('game', chooseLevel);
-//     }
-// }
+function soundClick() {
+    if (soundSwitch.innerHTML === 'off') {
+        soundSwitch.innerHTML = 'on';
+        soundOffChoose = true;
+    } else {
+        soundSwitch.innerHTML = 'off';
+        soundOffChoose = false;
+    }
+}
