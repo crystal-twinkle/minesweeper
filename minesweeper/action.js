@@ -34,19 +34,27 @@ const container = createElement('div', '', 'container');
 
 const textContainer = createElement('div', '', 'texts-container');
 let clickedContainer = createElement('div', '', 'text-content');
-const clickedText = createElement('p', 'Количество кликов:', 'text');
-const clickedAmountText = createElement('p', numberClicks, 'text');
+const clickedText = createElement('span', 'Количество кликов :', 'text');
+const clickedAmountText = createElement('span', numberClicks, 'text');
 
 let stopwatchContainer = createElement('div', '', 'text-content');
-const stopwatchText = createElement('p', 'Секудомер:', 'text');
-const stopwatchAmountText = createElement('p', '00 : 00', 'text');
+const stopwatchText = createElement('span', 'Секудомер :', 'text');
+const stopwatchAmountText = createElement('span', '00 : 00', 'text');
 
 let flagContainer = createElement('div', '', 'text-content');
-const flagText = createElement('p', 'Флаги:', 'text');
-const flagAmountText = createElement('p', minesAmount, 'text');
+const flagText = createElement('span', '🔺 :', 'text');
+const flagAmountText = createElement('span', minesAmount, 'text');
+
+let minesContainer = createElement('div', '', 'text-content');
+const minesText = createElement('span', '💣 :', 'text');
+const minesAmountText = createElement('span', minesAmount, 'text');
+
+const soundContainer = createElement('div', '', 'just-container', 'sound');
+const soundText = createElement('p', 'Звук:', 'text');
+const soundSwitch = createElement('button', 'off', 'btn-text', 'sound-btn');
 
 const teamContainer = createElement('div', '', 'just-container');
-const chooseTeamText = createElement('p', 'Выбор темы:', 'text');
+const chooseTeamText = createElement('p', 'Выбор темы :', 'text');
 const lightTeam = createElement('button', 'Светлая', 'btn-team__text');
 const darkTeam = createElement('button', 'Тёмная', 'btn-team__text');
 
@@ -61,16 +69,12 @@ const modal = createElement('div', '', 'modal', 'hidden');
 const modalCross = createElement('div', '❌', 'cross-modal');
 const modalText = createElement('p', '', 'modal-text');
 
-const soundContainer = createElement('div', '', 'just-container', 'sound');
-const soundText = createElement('p', 'Звук:', 'text');
-const soundSwitch = createElement('button', 'off', 'btn-text', 'sound-btn');
-
-soundContainer.append(soundText, soundSwitch);
-
 flagContainer.append(flagText, flagAmountText);
-stopwatchContainer.append(stopwatchText, stopwatchAmountText)
-clickedContainer.append(clickedText, clickedAmountText)
-textContainer.append(clickedContainer, stopwatchContainer, flagContainer, soundContainer)
+stopwatchContainer.append(stopwatchText, stopwatchAmountText);
+clickedContainer.append(clickedText, clickedAmountText);
+soundContainer.append(soundText, soundSwitch);
+minesContainer.append(minesText, minesAmountText);
+textContainer.append(clickedContainer, stopwatchContainer, flagContainer, minesContainer, soundContainer)
 container.append(textContainer);
 
 teamContainer.append(chooseTeamText, lightTeam, darkTeam);
@@ -174,7 +178,7 @@ function generateGame() {
             const cell = createElement('div', '', 'minesweeper__cell');
             cell.id = "" + row + DELIMETER + column;
             cell.addEventListener("click", () => {
-                if (gameOver || cell.classList.contains("clicked") || cell.innerText === '🔺') {
+                if (cell.classList.contains("clicked") || cell.innerText === '🔺') {
                     return;
                 }
                 (async function () {
@@ -264,7 +268,7 @@ function openPieceField(row, column) {
     if (row < 0 || row >= rows || column < 0 || column >= columns) {
         return;
     }
-    if (field[row][column].classList.contains("clicked")) {
+    if (field[row][column].classList.contains("clicked") || field[row][column].innerText === '🔺') {
         return;
     }
     if (field[row][column].innerText !== '🔺') {
@@ -273,7 +277,6 @@ function openPieceField(row, column) {
     cellsClicked += 1;
 
     let countMines = countFoundMines(row, column);
-
     if (countMines > 0) {
         field[row][column].innerText = countMines;
         if (countMines === 1) field[row][column].style.color = "blue";
@@ -284,8 +287,8 @@ function openPieceField(row, column) {
         if (countMines === 6) field[row][column].style.color = "teal";
         if (countMines === 7) field[row][column].style.color = "black";
         if (countMines === 8) field[row][column].style.color = "gray";
-
-    } else {
+    }
+    if(countMines === 0) {
         for (let x = -1; x <= 1; x++) {
             for (let y = -1; y <= 1; y++) {
                 openPieceField(row + x, column + y);
