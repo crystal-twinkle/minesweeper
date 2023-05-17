@@ -210,7 +210,7 @@ function generateGame() {
             const cell = createElement('div', '', 'minesweeper__cell');
             cell.id = "" + row + DELIMETER + column;
             cell.addEventListener("click", () => {
-                if (cell.classList.contains("clicked") || cell.innerText === '🔺') {
+                if (gameOver || cell.classList.contains("clicked") || cell.innerText === '🔺') {
                     return;
                 }
                 (async function () {
@@ -221,7 +221,7 @@ function generateGame() {
                             await audioBombClick.play();
                         }
                     }
-                    clickCell(cell);
+                    await clickCell(cell);
                 })();
             })
 
