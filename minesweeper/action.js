@@ -12,7 +12,8 @@ let rows = 10;
 let columns = 10;
 
 let minesArr = [];
-let minesAmount = 15;
+let minesAmount = 20;
+let newMinesAmount = 0;
 let countFlag = minesAmount;
 let cellsClicked = 0;
 let numberClicks = 0;
@@ -22,6 +23,7 @@ let chooseLevel = '';
 let timerId;
 let game;
 let soundOffChoose = false;
+let minesChoose = false;
 
 let audioClick = new Audio('audio/effect.mp3');
 let audioBombClick = new Audio('audio/classic_hurt.mp3');
@@ -47,7 +49,11 @@ const flagAmountText = createElement('span', minesAmount, 'text');
 
 let minesContainer = createElement('div', '', 'text-content');
 const minesText = createElement('span', '💣 :', 'text');
-const minesAmountText = createElement('span', minesAmount, 'text');
+const minesAmountText = createElement('input', '', 'text-mines');
+minesAmountText.value = minesAmount;
+minesAmountText.type = 'number';
+
+const btnNewMines = createElement('button', 'for new value of mines', 'btn-new-mines');
 
 const soundContainer = createElement('div', '', 'just-container', 'sound');
 const soundText = createElement('p', 'Звук:', 'text');
@@ -74,7 +80,7 @@ stopwatchContainer.append(stopwatchText, stopwatchAmountText);
 clickedContainer.append(clickedText, clickedAmountText);
 soundContainer.append(soundText, soundSwitch);
 minesContainer.append(minesText, minesAmountText);
-textContainer.append(clickedContainer, stopwatchContainer, flagContainer, minesContainer, soundContainer)
+textContainer.append(clickedContainer, stopwatchContainer, flagContainer, minesContainer, btnNewMines, soundContainer)
 container.append(textContainer);
 
 teamContainer.append(chooseTeamText, lightTeam, darkTeam);
@@ -88,6 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
     btnNewGame.addEventListener('click', () => {
         deleteMinesweeper();
         generateGame();
+        minesAmountText.value = minesAmount;
     })
 
     easyLevel.addEventListener('click', () => {
@@ -95,9 +102,10 @@ document.addEventListener('DOMContentLoaded', function () {
         chooseLevel = 'easy';
         rows = 10;
         columns = 10;
-        minesAmount = 15;
+        minesAmount = 20;
         flagAmountText.innerHTML = minesAmount;
         generateGame();
+        minesAmountText.value = minesAmount;
     })
 
     middleLevel.addEventListener('click', () => {
@@ -108,6 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
         minesAmount = 37;
         flagAmountText.innerHTML = minesAmount;
         generateGame();
+        minesAmountText.value = minesAmount;
     })
 
     hardLevel.addEventListener('click', () => {
@@ -118,6 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
         minesAmount = 89;
         flagAmountText.innerHTML = minesAmount;
         generateGame();
+        minesAmountText.value = minesAmount;
     })
 
     modalCross.addEventListener("click", () => {
@@ -135,6 +145,28 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     soundSwitch.addEventListener("click", soundClick);
+
+    minesAmountText.addEventListener('input', function () {
+        let inputValue = this.value;
+        if (inputValue < 0) {
+            newMinesAmount = 0;
+        }
+        if (inputValue < 0 || inputValue > 99) {
+            alert('Неправильное число');
+        } else {
+            newMinesAmount = inputValue;
+        }
+    });
+
+    btnNewMines.addEventListener('click', () => {
+        if(newMinesAmount === 0) {
+            newMinesAmount = minesAmount
+        } else minesAmount = newMinesAmount;
+        specialGame();
+        minesAmountText.value = newMinesAmount;
+        flagAmountText.innerHTML = newMinesAmount;
+    })
+
 })
 
 function deleteMinesweeper() {
@@ -288,7 +320,7 @@ function openPieceField(row, column) {
         if (countMines === 7) field[row][column].style.color = "black";
         if (countMines === 8) field[row][column].style.color = "gray";
     }
-    if(countMines === 0) {
+    if (countMines === 0) {
         for (let x = -1; x <= 1; x++) {
             for (let y = -1; y <= 1; y++) {
                 openPieceField(row + x, column + y);
@@ -392,5 +424,24 @@ function soundClick() {
     } else {
         soundSwitch.innerHTML = 'off';
         soundOffChoose = false;
+    }
+}
+
+function specialGame() {
+    deleteMinesweeper();
+    if (chooseLevel === 'easy' || chooseLevel === '') {
+        rows = 10;
+        columns = 10;
+        generateGame();
+    }
+    if (chooseLevel === 'middle') {
+        rows = 15;
+        columns = 15;
+        generateGame();
+    }
+    if (chooseLevel === 'hard') {
+        rows = 25;
+        columns = 25;
+        generateGame();
     }
 }
