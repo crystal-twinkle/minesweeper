@@ -21,6 +21,8 @@ let DELIMETER = ":";
 let chooseLevel = '';
 let timerId;
 
+let chooseTeam = '';
+
 const container = createElement('div', '', 'container');
 
 const textContainer = createElement('div', '', 'text-container');
@@ -36,16 +38,21 @@ let flagContainer = createElement('div', '', 'just-container');
 const flagText = createElement('p', 'Флаги:', 'text');
 const flagAmountText = createElement('p', minesAmount, 'text');
 
+const teamContainer = createElement('div', '', 'just-container');
+const chooseTeamText = createElement('p', 'Выбор темы:', 'text');
+const lightTeam = createElement('button', 'Светлая', 'btn-team__text');
+const darkTeam = createElement('button', 'Тёмная', 'btn-team__text');
+
 const header = createElement('div', '', 'header');
 const btnNewGame = createElement('button', 'New game', 'btn-new-game');
 const levelsContainer = createElement('div', '', 'just-container');
 const chooseLevelText = createElement('p', 'Choose level:', 'text');
-const easyLevel = createElement('p', 'easy 10x10;', 'text');
-const middleLevel = createElement('p', 'medium 15x15;', 'text');
-const hardLevel = createElement('p', 'hard 25x25;', 'text');
+const easyLevel = createElement('button', 'easy 10x10', 'btn-text');
+const middleLevel = createElement('button', 'medium 15x15', 'btn-text');
+const hardLevel = createElement('button', 'hard 25x25', 'btn-text');
 const modal = createElement('div', '', 'modal', 'hidden');
 const modalCross = createElement('div', '❌', 'cross-modal');
-const modalText = document.createElement('p');
+const modalText = createElement('p', '', 'modal-text');
 
 flagContainer.append(flagText, flagAmountText);
 stopwatchContainer.append(stopwatchText, stopwatchAmountText)
@@ -53,8 +60,9 @@ clickedContainer.append(clickedText, clickedAmountText)
 textContainer.append(clickedContainer, stopwatchContainer, flagContainer)
 container.append(textContainer);
 
+teamContainer.append(chooseTeamText, lightTeam, darkTeam);
 levelsContainer.append(chooseLevelText, easyLevel, middleLevel, hardLevel);
-header.append(btnNewGame, levelsContainer)
+header.append(btnNewGame, levelsContainer, teamContainer)
 modal.append(modalCross, modalText);
 body.append(header, modal, container);
 
@@ -99,6 +107,14 @@ document.addEventListener('DOMContentLoaded', function () {
         modal.classList.add("hidden");
     });
 
+    lightTeam.addEventListener("click", () => {
+        chooseTeam = 'light'
+        teamClick();
+    });
+    darkTeam.addEventListener("click", () => {
+        chooseTeam = 'dark'
+        teamClick()
+    });
 })
 
 function deleteMinesweeper() {
@@ -154,9 +170,9 @@ function generateGame() {
         }
         field.push(rowCells);
     }
-    container.append(minesweeper)
+    container.append(minesweeper);
+    teamClick();
 }
-
 
 generateGame();
 
@@ -304,4 +320,29 @@ function timer() {
 function stopTimer() {
     clearInterval(timerId);
     stopwatchAmountText.innerHTML = `00 : 00`;
+}
+
+function teamClick() {
+    let texts = document.querySelectorAll('.text');
+    let minesweeperQuery = document.querySelector('.minesweeper');
+    if(chooseTeam === 'dark') {
+        header.classList.add("header-dark");
+        body.classList.add('body-dark');
+        minesweeperQuery.classList.add('minesweeper-dark');
+        modal.classList.add('modal-dark');
+        modalText.classList.add('modal-text-dark')
+        for (let text of texts) {
+            text.classList.add("text-dark");
+        }
+    }
+    if(chooseTeam === 'light') {
+        header.classList.remove("header-dark");
+        body.classList.remove('body-dark');
+        minesweeperQuery.classList.remove('minesweeper-dark');
+        modal.classList.remove('modal-dark');
+        modalText.classList.remove('modal-text-dark')
+        for (let text of texts) {
+            text.classList.remove("text-dark");
+        }
+    }
 }
