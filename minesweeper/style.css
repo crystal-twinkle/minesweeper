@@ -1,3 +1,7 @@
+body {
+  margin: 0;
+}
+
 .header {
   display: flex;
   align-items: center;
@@ -8,7 +12,7 @@
   background-color: #edc5fd;
   border: 10px solid #270f34;
   padding: 10px 50px;
-  max-width: 550px;
+  max-width: 650px;
   border-radius: 100px;
   box-sizing: border-box;
 }
@@ -178,7 +182,7 @@ input {
 
 .modal-dark {
   border: 15px solid #1b2e50;
-  background-color: #576dc0;
+  background-color: #91a4ee;
 }
 
 .modal-text-dark {
@@ -229,12 +233,23 @@ input {
   cursor: pointer;
 }
 
-@media (max-width: 430px) {
+.blackout-dark {
+  background: rgba(238, 238, 238, 0.6);
+}
 
+.result-dark {
+  background-color: #91a4ee;
+}
+
+
+@media (max-width: 500px) {
   .header,
   .just-container {
     flex-direction: column;
   }
+}
+
+@media (max-width: 430px) {
 
   .modal {
     left: 20%;

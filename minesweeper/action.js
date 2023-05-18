@@ -402,7 +402,9 @@ function teamClick() {
         body.classList.add('body-dark');
         minesweeperQuery.classList.add('minesweeper-dark');
         modal.classList.add('modal-dark');
-        modalText.classList.add('modal-text-dark')
+        modalText.classList.add('modal-text-dark');
+        blackout.classList.add('blackout-dark');
+        resultContainer.classList.add('result-dark');
         for (let text of texts) {
             text.classList.add("text-dark");
         }
@@ -412,7 +414,9 @@ function teamClick() {
         body.classList.remove('body-dark');
         minesweeperQuery.classList.remove('minesweeper-dark');
         modal.classList.remove('modal-dark');
-        modalText.classList.remove('modal-text-dark')
+        modalText.classList.remove('modal-text-dark');
+        blackout.classList.remove('blackout-dark');
+        resultContainer.classList.remove('result-dark');
         for (let text of texts) {
             text.classList.remove("text-dark");
         }
