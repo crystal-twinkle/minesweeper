@@ -23,8 +23,6 @@ let chooseLevel = '';
 let timerId;
 let resLocal = [];
 let soundOffChoose = false;
-let btnClick = false;
-
 
 let audioClick = new Audio('audio/effect.mp3');
 let audioBombClick = new Audio('audio/classic_hurt.mp3');
@@ -169,7 +167,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     btnNewMines.addEventListener('click', () => {
-        btnClick = true;
         if (newMinesAmount === 0) {
             newMinesAmount = minesAmount
         } else minesAmount = newMinesAmount;
@@ -191,9 +188,6 @@ document.addEventListener('DOMContentLoaded', function () {
 })
 
 function generateGame() {
-    if (!btnClick) {
-        loadSaveResGame();
-    }
 
     const minesweeper = createElement('div', '', 'minesweeper');
 
@@ -248,7 +242,6 @@ function generateGame() {
         field.push(rowCells);
     }
     container.append(minesweeper);
-    teamClick();
 }
 
 generateGame();
@@ -269,7 +262,6 @@ function clickCell(cell) {
     if (cellsClicked === 0) {
         generateMines(cell);
         timer();
-        btnClick = true;
     }
 
     if (minesArr.includes(cell.id)) {
@@ -438,7 +430,6 @@ function soundClick() {
 }
 
 function deleteMinesweeper() {
-    btnClick = true;
     let minesweeperQuery = document.querySelector('.minesweeper');
     container.removeChild(minesweeperQuery);
     field = [];
@@ -481,27 +472,29 @@ function endGame(youWin) {
 
 function saveResGame(resNew) {
     if (resNew) {
-        resLocal.push(resNew);
+        resLocal.unshift(resNew);
     }
-    let newArr = resLocal.join(', ').split(', ');
-    if (newArr.length > 10) {
-        newArr.shift();
+    let newArrLocal = resLocal.join(', ').split(', ');
+    if (newArrLocal.length > 10) {
+        let newArr = newArrLocal.slice(0, 10);
+        resultTextAmount.innerHTML = newArr.join(' ');
+        localStorage.setItem('result', newArr.join(', '));
+    }  else {
+        localStorage.setItem('result', newArrLocal.join(', '));
+        resultTextAmount.innerHTML = newArrLocal.join(' ');
     }
-
-    localStorage.setItem('result', newArr.join(', '));
-    resultTextAmount.innerHTML = newArr.join(' ');
 }
 
 function loadSaveResGame() {
     let local = localStorage.getItem('result');
     if (local) {
         resLocal.push(local);
-        let newResLocal = resLocal.join(',').split(',');
+        let newResLocal = resLocal.join(', ').split(', ');
         if (newResLocal.length > 10) {
             newResLocal.shift();
         }
-        console.log(newResLocal);
-
         resultTextAmount.innerHTML = newResLocal.join(' ');
     }
 }
+
+loadSaveResGame();
