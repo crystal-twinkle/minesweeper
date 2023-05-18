@@ -32,7 +32,7 @@ let audioWin = new Audio('audio/triumphal_trumpet.mp3');
 
 
 let chooseTeam = '';
-
+const blackout = createElement('div', '', 'blackout');
 const container = createElement('div', '', 'container');
 
 const textContainer = createElement('div', '', 'texts-container');
@@ -59,20 +59,21 @@ const btnNewMines = createElement('button', 'set mines', 'btn-new-mines');
 const resultBTN = createElement('button', 'Результаты', 'btn-result');
 const resultContainer = createElement('div', '', 'result');
 const resultTextAmount = createElement('span', '', 'text-result');
+const resultCross = createElement('div', '❌', 'cross-result');
 
-const soundContainer = createElement('div', '', 'just-container', 'sound');
+const soundContainer = createElement('div', '', 'text-content', 'sound');
 const soundText = createElement('p', 'Звук:', 'text');
 const soundSwitch = createElement('button', 'off', 'btn-text', 'sound-btn');
 
 const teamContainer = createElement('div', '', 'just-container');
-const chooseTeamText = createElement('p', 'Выбор темы :', 'text');
+const chooseTeamText = createElement('span', 'Выбор темы :', 'text');
 const lightTeam = createElement('button', 'Светлая', 'btn-team__text');
 const darkTeam = createElement('button', 'Тёмная', 'btn-team__text');
 
 const header = createElement('div', '', 'header');
 const btnNewGame = createElement('button', 'New game', 'btn-new-game');
 const levelsContainer = createElement('div', '', 'just-container');
-const chooseLevelText = createElement('p', 'Choose level:', 'text');
+const chooseLevelText = createElement('span', 'Choose level:', 'text');
 const easyLevel = createElement('button', 'easy 10x10', 'btn-text');
 const middleLevel = createElement('button', 'medium 15x15', 'btn-text');
 const hardLevel = createElement('button', 'hard 25x25', 'btn-text');
@@ -86,7 +87,7 @@ stopwatchContainer.append(stopwatchText, stopwatchAmountText);
 clickedContainer.append(clickedText, clickedAmountText);
 soundContainer.append(soundText, soundSwitch);
 minesContainer.append(minesText, minesAmountText);
-resultContainer.append(resultTextAmount)
+resultContainer.append(resultCross, resultTextAmount)
 
 textContainer.append(clickedContainer, stopwatchContainer, flagContainer, minesContainer, btnNewMines, soundContainer)
 container.append(textContainer);
@@ -95,7 +96,7 @@ teamContainer.append(chooseTeamText, lightTeam, darkTeam);
 levelsContainer.append(chooseLevelText, easyLevel, middleLevel, hardLevel);
 header.append(btnNewGame, levelsContainer, teamContainer, resultBTN)
 modal.append(modalCross, modalText);
-body.append(header, modal, container, resultContainer);
+body.append(blackout, header, modal, container, resultContainer);
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -140,6 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     modalCross.addEventListener("click", () => {
         modal.classList.add("hidden");
+        blackout.classList.remove("blackout-yes");
     });
 
     lightTeam.addEventListener("click", () => {
@@ -174,7 +176,17 @@ document.addEventListener('DOMContentLoaded', function () {
         specialGame();
         minesAmountText.value = newMinesAmount;
         flagAmountText.innerHTML = newMinesAmount;
-    })
+    });
+
+    resultBTN.addEventListener('click', () => {
+        blackout.classList.add("blackout-yes");
+        resultContainer.classList.add("result-show");
+    });
+
+    resultCross.addEventListener('click', () => {
+        resultContainer.classList.remove("result-show");
+        blackout.classList.remove("blackout-yes");
+    });
 
 })
 
@@ -184,21 +196,22 @@ function generateGame() {
     }
 
     const minesweeper = createElement('div', '', 'minesweeper');
-    minesweeper.style.width = "300px";
-    minesweeper.style.height = "300px";
 
-    if (chooseLevel === 'easy') {
+    if (chooseLevel === 'easy' || chooseLevel === '') {
         minesweeper.style.width = "300px";
+        minesweeper.style.minWidth = "300px";
         minesweeper.style.height = "300px";
     }
 
     if (chooseLevel === 'middle') {
         minesweeper.style.width = "450px";
+        minesweeper.style.minWidth = "450px";
         minesweeper.style.height = "450px";
     }
 
     if (chooseLevel === 'hard') {
         minesweeper.style.width = "750px";
+        minesweeper.style.minWidth = "750px";
         minesweeper.style.height = "750px";
     }
 
@@ -460,6 +473,7 @@ function specialGame() {
 function endGame(youWin) {
     modalText.textContent = youWin ? 'You win!' : 'You lose :(';
     modal.classList.remove("hidden");
+    blackout.classList.add("blackout-yes");
 
     let resOutput = youWin ? 'win' : 'lose';
     saveResGame(resOutput);
@@ -475,7 +489,7 @@ function saveResGame(resNew) {
     }
 
     localStorage.setItem('result', newArr.join(', '));
-    resultTextAmount.innerHTML = newArr.join('');
+    resultTextAmount.innerHTML = newArr.join(' ');
 }
 
 function loadSaveResGame() {
@@ -488,6 +502,6 @@ function loadSaveResGame() {
         }
         console.log(newResLocal);
 
-        resultTextAmount.innerHTML = newResLocal.join('');
+        resultTextAmount.innerHTML = newResLocal.join(' ');
     }
 }
