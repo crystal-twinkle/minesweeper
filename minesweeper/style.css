@@ -171,6 +171,34 @@ input {
   color: #ffffff;
 }
 
+.btn-result {
+  width: 100px;
+  height: 40px;
+  border: 3px solid #2f2f2f;
+  border-radius: 30px;
+  font-size: 15px;
+  font-weight: 700;
+  background-color: #ffffff;
+}
+
+.result {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  flex-direction: column;
+  width: 50px;
+  background-color: #db87f1;
+  border: 3px solid #2f2f2f;
+  border-radius: 30px;
+  padding: 20px;
+}
+
+.text-result {
+  font-size: 20px;
+  width: 35px;
+  margin: auto;
+}
+
 @media (max-width: 430px) {
 
   .header,

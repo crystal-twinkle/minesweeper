@@ -21,9 +21,10 @@ let gameOver = false;
 let DELIMETER = ":";
 let chooseLevel = '';
 let timerId;
-let game;
+let resLocal = [];
 let soundOffChoose = false;
-let minesChoose = false;
+let btnClick = false;
+
 
 let audioClick = new Audio('audio/effect.mp3');
 let audioBombClick = new Audio('audio/classic_hurt.mp3');
@@ -55,6 +56,10 @@ minesAmountText.type = 'number';
 
 const btnNewMines = createElement('button', 'set mines', 'btn-new-mines');
 
+const resultBTN = createElement('button', 'Результаты', 'btn-result');
+const resultContainer = createElement('div', '', 'result');
+const resultTextAmount = createElement('span', '', 'text-result');
+
 const soundContainer = createElement('div', '', 'just-container', 'sound');
 const soundText = createElement('p', 'Звук:', 'text');
 const soundSwitch = createElement('button', 'off', 'btn-text', 'sound-btn');
@@ -75,19 +80,22 @@ const modal = createElement('div', '', 'modal', 'hidden');
 const modalCross = createElement('div', '❌', 'cross-modal');
 const modalText = createElement('p', '', 'modal-text');
 
+
 flagContainer.append(flagText, flagAmountText);
 stopwatchContainer.append(stopwatchText, stopwatchAmountText);
 clickedContainer.append(clickedText, clickedAmountText);
 soundContainer.append(soundText, soundSwitch);
 minesContainer.append(minesText, minesAmountText);
+resultContainer.append(resultTextAmount)
+
 textContainer.append(clickedContainer, stopwatchContainer, flagContainer, minesContainer, btnNewMines, soundContainer)
 container.append(textContainer);
 
 teamContainer.append(chooseTeamText, lightTeam, darkTeam);
 levelsContainer.append(chooseLevelText, easyLevel, middleLevel, hardLevel);
-header.append(btnNewGame, levelsContainer, teamContainer)
+header.append(btnNewGame, levelsContainer, teamContainer, resultBTN)
 modal.append(modalCross, modalText);
-body.append(header, modal, container);
+body.append(header, modal, container, resultContainer);
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -159,7 +167,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     btnNewMines.addEventListener('click', () => {
-        if(newMinesAmount === 0) {
+        btnClick = true;
+        if (newMinesAmount === 0) {
             newMinesAmount = minesAmount
         } else minesAmount = newMinesAmount;
         specialGame();
@@ -169,21 +178,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
 })
 
-function deleteMinesweeper() {
-    let minesweeperQuery = document.querySelector('.minesweeper');
-    container.removeChild(minesweeperQuery);
-    field = [];
-    minesArr = [];
-    numberClicks = 0;
-    cellsClicked = 0;
-    gameOver = false;
-    modal.classList.add("hidden");
-    clickedAmountText.innerText = numberClicks;
-    stopTimer();
-}
-
 function generateGame() {
-    // saveGame();
+    if (!btnClick) {
+        loadSaveResGame();
+    }
+
     const minesweeper = createElement('div', '', 'minesweeper');
     minesweeper.style.width = "300px";
     minesweeper.style.height = "300px";
@@ -253,9 +252,11 @@ function generateMines(cell) {
 }
 
 function clickCell(cell) {
+
     if (cellsClicked === 0) {
         generateMines(cell);
         timer();
+        btnClick = true;
     }
 
     if (minesArr.includes(cell.id)) {
@@ -328,7 +329,7 @@ function openPieceField(row, column) {
         }
     }
 
-    if (cellsClicked === rows * columns - minesAmount) {
+    if (cellsClicked === rows * columns - minesAmount && !gameOver) {
         winGame();
     }
 }
@@ -362,10 +363,6 @@ function checkCell(row, column) {
     return minesArr.includes("" + row + DELIMETER + column) ? 1 : 0;
 }
 
-function endGame(youWin) {
-    modalText.textContent = youWin ? 'You win!' : 'You lose :(';
-    modal.classList.remove("hidden");
-}
 
 function timer() {
     let time = 0;
@@ -427,6 +424,20 @@ function soundClick() {
     }
 }
 
+function deleteMinesweeper() {
+    btnClick = true;
+    let minesweeperQuery = document.querySelector('.minesweeper');
+    container.removeChild(minesweeperQuery);
+    field = [];
+    minesArr = [];
+    numberClicks = 0;
+    cellsClicked = 0;
+    gameOver = false;
+    modal.classList.add("hidden");
+    clickedAmountText.innerText = numberClicks;
+    stopTimer();
+}
+
 function specialGame() {
     deleteMinesweeper();
     if (chooseLevel === 'easy' || chooseLevel === '') {
@@ -443,5 +454,40 @@ function specialGame() {
         rows = 25;
         columns = 25;
         generateGame();
+    }
+}
+
+function endGame(youWin) {
+    modalText.textContent = youWin ? 'You win!' : 'You lose :(';
+    modal.classList.remove("hidden");
+
+    let resOutput = youWin ? 'win' : 'lose';
+    saveResGame(resOutput);
+}
+
+function saveResGame(resNew) {
+    if (resNew) {
+        resLocal.push(resNew);
+    }
+    let newArr = resLocal.join(', ').split(', ');
+    if (newArr.length > 10) {
+        newArr.shift();
+    }
+
+    localStorage.setItem('result', newArr.join(', '));
+    resultTextAmount.innerHTML = newArr.join('');
+}
+
+function loadSaveResGame() {
+    let local = localStorage.getItem('result');
+    if (local) {
+        resLocal.push(local);
+        let newResLocal = resLocal.join(',').split(',');
+        if (newResLocal.length > 10) {
+            newResLocal.shift();
+        }
+        console.log(newResLocal);
+
+        resultTextAmount.innerHTML = newResLocal.join('');
     }
 }
