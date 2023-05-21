@@ -12,7 +12,7 @@ let rows = 10;
 let columns = 10;
 
 let minesArr = [];
-let minesAmount = 20;
+let minesAmount = 10;
 let newMinesAmount = 0;
 let countFlag = minesAmount;
 let cellsClicked = 0;
@@ -51,6 +51,7 @@ const minesText = createElement('span', '💣 :', 'text');
 const minesAmountText = createElement('input', '', 'text-mines');
 minesAmountText.value = minesAmount;
 minesAmountText.type = 'number';
+minesAmountText.step = '1';
 
 const btnNewMines = createElement('button', 'set mines', 'btn-new-mines');
 
@@ -102,6 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
         deleteMinesweeper();
         generateGame();
         minesAmountText.value = minesAmount;
+        flagAmountText.innerHTML = minesAmount;
     })
 
     easyLevel.addEventListener('click', () => {
@@ -109,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
         chooseLevel = 'easy';
         rows = 10;
         columns = 10;
-        minesAmount = 20;
+        minesAmount = 10;
         flagAmountText.innerHTML = minesAmount;
         generateGame();
         minesAmountText.value = minesAmount;
@@ -156,20 +158,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     minesAmountText.addEventListener('input', function () {
         let inputValue = this.value;
-        if (inputValue < 0) {
-            newMinesAmount = 0;
-        }
-        if (inputValue < 0 || inputValue > 99) {
+        if (inputValue < 10 || inputValue > 99) {
             alert('Неправильное число');
+        } else if(parseFloat(inputValue)) {
+            newMinesAmount = Math.round(inputValue);
         } else {
             newMinesAmount = inputValue;
         }
     });
 
     btnNewMines.addEventListener('click', () => {
-        if (newMinesAmount === 0) {
-            newMinesAmount = minesAmount
-        } else minesAmount = newMinesAmount;
         specialGame();
         minesAmountText.value = newMinesAmount;
         flagAmountText.innerHTML = newMinesAmount;
