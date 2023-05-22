@@ -158,8 +158,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     minesAmountText.addEventListener('input', function () {
         let inputValue = this.value;
-        if (inputValue < 10 || inputValue > 99) {
-            alert('Неправильное число');
+        if (inputValue < 10) {
+            newMinesAmount = 10;
+        } else if(inputValue > 99) {
+            newMinesAmount = 99;
         } else if(parseFloat(inputValue)) {
             newMinesAmount = Math.round(inputValue);
         } else {
