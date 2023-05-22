@@ -100,43 +100,43 @@ body.append(blackout, header, modal, container, resultContainer);
 document.addEventListener('DOMContentLoaded', function () {
 
     btnNewGame.addEventListener('click', () => {
-        deleteMinesweeper();
+        restartMinesweeper();
         generateGame();
         minesAmountText.value = minesAmount;
         flagAmountText.innerHTML = minesAmount;
     })
 
     easyLevel.addEventListener('click', () => {
-        deleteMinesweeper();
+        restartMinesweeper();
         chooseLevel = 'easy';
         rows = 10;
         columns = 10;
         minesAmount = 10;
         flagAmountText.innerHTML = minesAmount;
-        generateGame();
         minesAmountText.value = minesAmount;
+        generateGame();
     })
 
     middleLevel.addEventListener('click', () => {
-        deleteMinesweeper();
+        restartMinesweeper();
         chooseLevel = 'middle';
         rows = 15;
         columns = 15;
-        minesAmount = 37;
+        minesAmount = 35;
         flagAmountText.innerHTML = minesAmount;
-        generateGame();
         minesAmountText.value = minesAmount;
+        generateGame();
     })
 
     hardLevel.addEventListener('click', () => {
-        deleteMinesweeper();
+        restartMinesweeper();
         chooseLevel = 'hard';
         rows = 25;
         columns = 25;
-        minesAmount = 89;
+        minesAmount = 85;
         flagAmountText.innerHTML = minesAmount;
-        generateGame();
         minesAmountText.value = minesAmount;
+        generateGame();
     })
 
     modalCross.addEventListener("click", () => {
@@ -170,9 +170,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     btnNewMines.addEventListener('click', () => {
-        specialGame();
+        minesAmount = newMinesAmount;
         minesAmountText.value = newMinesAmount;
         flagAmountText.innerHTML = newMinesAmount;
+        specialGame();
     });
 
     resultBTN.addEventListener('click', () => {
@@ -295,10 +296,11 @@ function setFlag(cell) {
     flagAmountText.innerHTML = countFlag;
     if (cell.innerText === '🔺') {
         cell.innerText = '';
+        countFlag += 1;
     } else if (!cell.classList.contains("clicked")) {
         cell.innerText = '🔺';
+        countFlag -= 1;
     }
-    countFlag -= 1;
     flagAmountText.innerHTML = countFlag;
 }
 
@@ -433,8 +435,21 @@ function soundClick() {
     }
 }
 
-function deleteMinesweeper() {
+function restartMinesweeper() {
     let minesweeperQuery = document.querySelector('.minesweeper');
+    if(chooseLevel === 'easy' || chooseLevel === '') {
+        newMinesAmount = 10;
+        minesAmount = 10;
+    }
+    if(chooseLevel === 'medium') {
+        newMinesAmount = 35;
+        minesAmount = 35;
+    }
+    if(chooseLevel === 'hard') {
+        newMinesAmount = 85;
+        minesAmount = 85;
+    }
+    countFlag = minesAmount;
     container.removeChild(minesweeperQuery);
     field = [];
     minesArr = [];
@@ -447,7 +462,7 @@ function deleteMinesweeper() {
 }
 
 function specialGame() {
-    deleteMinesweeper();
+    restartMinesweeper();
     if (chooseLevel === 'easy' || chooseLevel === '') {
         rows = 10;
         columns = 10;
@@ -466,7 +481,8 @@ function specialGame() {
 }
 
 function endGame(youWin) {
-    modalText.textContent = youWin ? 'You win!' : 'You lose :(';
+
+    modalText.textContent = youWin ? `You win! You found all mines in ${stopwatchAmountText.textContent} and ${clickedAmountText.textContent} click` : 'Unfortunately, you lose :(';
     modal.classList.remove("hidden");
     blackout.classList.add("blackout-yes");
 
