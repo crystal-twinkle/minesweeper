@@ -52,6 +52,8 @@ const minesAmountText = createElement('input', '', 'text-mines');
 minesAmountText.value = minesAmount;
 minesAmountText.type = 'number';
 minesAmountText.step = '1';
+minesAmountText.min = '10';
+minesAmountText.max = '99';
 
 const btnNewMines = createElement('button', 'set mines', 'btn-new-mines');
 
@@ -104,6 +106,18 @@ document.addEventListener('DOMContentLoaded', function () {
         generateGame();
         minesAmountText.value = minesAmount;
         flagAmountText.innerHTML = minesAmount;
+        if (chooseLevel === 'easy' || chooseLevel === '') {
+            newMinesAmount = 10;
+            minesAmount = 10;
+        }
+        if (chooseLevel === 'medium') {
+            newMinesAmount = 35;
+            minesAmount = 35;
+        }
+        if (chooseLevel === 'hard') {
+            newMinesAmount = 85;
+            minesAmount = 85;
+        }
     })
 
     easyLevel.addEventListener('click', () => {
@@ -158,11 +172,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     minesAmountText.addEventListener('input', function () {
         let inputValue = this.value;
-        if (inputValue < 10) {
-            newMinesAmount = 10;
-        } else if(inputValue > 99) {
-            newMinesAmount = 99;
-        } else if(parseFloat(inputValue)) {
+        if (parseFloat(inputValue)) {
             newMinesAmount = Math.round(inputValue);
         } else {
             newMinesAmount = inputValue;
@@ -170,9 +180,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     btnNewMines.addEventListener('click', () => {
-        minesAmount = newMinesAmount;
-        minesAmountText.value = newMinesAmount;
-        flagAmountText.innerHTML = newMinesAmount;
         specialGame();
     });
 
@@ -189,7 +196,6 @@ document.addEventListener('DOMContentLoaded', function () {
 })
 
 function generateGame() {
-
     const minesweeper = createElement('div', '', 'minesweeper');
 
     if (chooseLevel === 'easy' || chooseLevel === '') {
@@ -437,18 +443,6 @@ function soundClick() {
 
 function restartMinesweeper() {
     let minesweeperQuery = document.querySelector('.minesweeper');
-    if(chooseLevel === 'easy' || chooseLevel === '') {
-        newMinesAmount = 10;
-        minesAmount = 10;
-    }
-    if(chooseLevel === 'medium') {
-        newMinesAmount = 35;
-        minesAmount = 35;
-    }
-    if(chooseLevel === 'hard') {
-        newMinesAmount = 85;
-        minesAmount = 85;
-    }
     countFlag = minesAmount;
     container.removeChild(minesweeperQuery);
     field = [];
@@ -462,6 +456,9 @@ function restartMinesweeper() {
 }
 
 function specialGame() {
+    minesAmountText.value = newMinesAmount;
+    minesAmount = minesAmountText.value;
+    flagAmountText.innerHTML = newMinesAmount;
     restartMinesweeper();
     if (chooseLevel === 'easy' || chooseLevel === '') {
         rows = 10;
@@ -499,7 +496,7 @@ function saveResGame(resNew) {
         let newArr = newArrLocal.slice(0, 10);
         resultTextAmount.innerHTML = newArr.join(' ');
         localStorage.setItem('result', newArr.join(', '));
-    }  else {
+    } else {
         localStorage.setItem('result', newArrLocal.join(', '));
         resultTextAmount.innerHTML = newArrLocal.join(' ');
     }
