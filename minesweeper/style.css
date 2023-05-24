@@ -264,14 +264,17 @@ input {
     left: 8%;
   }
 
-}
+  .modal {
+    left: 25%;
+  }
 
+}
 
 
 @media (max-width: 430px) {
 
   .modal {
-    left: 20%;
+    left: 6%;
   }
 
   .result {
@@ -285,3 +288,4 @@ input {
   }
 
 }
+
