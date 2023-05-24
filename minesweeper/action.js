@@ -172,7 +172,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     minesAmountText.addEventListener('input', function () {
         let inputValue = this.value;
-        if (parseFloat(inputValue)) {
+        if (inputValue < 10) {
+            newMinesAmount = 10;
+        } else if (inputValue > 99) {
+            newMinesAmount = 99;
+        } else if (parseFloat(inputValue)) {
             newMinesAmount = Math.round(inputValue);
         } else {
             newMinesAmount = inputValue;
@@ -479,12 +483,14 @@ function specialGame() {
 
 function endGame(youWin) {
 
-    modalText.textContent = youWin ? `You win! You found all mines in ${stopwatchAmountText.textContent} and ${clickedAmountText.textContent} click` : 'Unfortunately, you lose :(';
+    modalText.textContent = youWin ? `You win! You found all mines in ${stopwatchAmountText.textContent} time and ${clickedAmountText.textContent} click` : 'Unfortunately, you lose :(';
     modal.classList.remove("hidden");
     blackout.classList.add("blackout-yes");
 
-    let resOutput = youWin ? 'win' : 'lose';
-    saveResGame(resOutput);
+    if (youWin) {
+        let resOutput = `You found all mines in ${stopwatchAmountText.textContent} time and ${clickedAmountText.textContent} click`;
+        saveResGame(resOutput);
+    }
 }
 
 function saveResGame(resNew) {

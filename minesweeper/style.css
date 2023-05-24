@@ -215,7 +215,7 @@ input {
   align-items: center;
   flex-wrap: wrap;
   flex-direction: column;
-  width: 50px;
+  width: 350px;
   background-color: #db87f1;
   border: 3px solid #2f2f2f;
   border-radius: 30px;
@@ -227,8 +227,7 @@ input {
 }
 
 .text-result {
-  font-size: 20px;
-  width: 35px;
+  font-size: 18px;
   margin: auto;
 }
 
@@ -246,19 +245,43 @@ input {
 .result-dark {
   background-color: #91a4ee;
 }
+@media (max-width: 700px) {
 
+  .result {
+    left: 21%;
+  }
+
+}
 
 @media (max-width: 500px) {
+
   .header,
   .just-container {
     flex-direction: column;
   }
+
+  .result {
+    left: 8%;
+  }
+
 }
+
+
 
 @media (max-width: 430px) {
 
   .modal {
     left: 20%;
+  }
+
+  .result {
+    left: 3%;
+    width: 286px;
+    padding: 30px 5px 10px;
+  }
+
+  .text-result {
+    font-size: 15px;
   }
 
 }
