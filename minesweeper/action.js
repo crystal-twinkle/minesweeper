@@ -104,8 +104,6 @@ document.addEventListener('DOMContentLoaded', function () {
     btnNewGame.addEventListener('click', () => {
         restartMinesweeper();
         generateGame();
-        minesAmountText.value = minesAmount;
-        flagAmountText.innerHTML = minesAmount;
         if (chooseLevel === 'easy' || chooseLevel === '') {
             newMinesAmount = 10;
             minesAmount = 10;
@@ -118,6 +116,8 @@ document.addEventListener('DOMContentLoaded', function () {
             newMinesAmount = 85;
             minesAmount = 85;
         }
+        minesAmountText.value = minesAmount;
+        flagAmountText.innerHTML = minesAmount;
     })
 
     easyLevel.addEventListener('click', () => {
