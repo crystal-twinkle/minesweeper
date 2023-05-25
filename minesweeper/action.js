@@ -279,7 +279,7 @@ function clickCell(cell) {
         gameOver = true;
         showMines();
         clearInterval(timerId);
-        endGame(false)
+        endGame(false);
         return;
     }
 
@@ -349,19 +349,8 @@ function openPieceField(row, column) {
     if (cellsClicked === rows * columns - minesAmount && !gameOver) {
         winGame();
     }
-}
 
-function winGame() {
-    gameOver = true;
-    if (!soundOffChoose) {
-        (async function () {
-            await audioWin.play();
-        })();
-    }
-    endGame(true);
-    clearInterval(timerId)
 }
-
 
 function countFoundMines(row, column) {
     let countMines = 0;
@@ -378,6 +367,17 @@ function checkCell(row, column) {
         return 0;
     }
     return minesArr.includes("" + row + DELIMETER + column) ? 1 : 0;
+}
+
+function winGame() {
+    gameOver = true;
+    if (!soundOffChoose) {
+        (async function () {
+            await audioWin.play();
+        })();
+    }
+    endGame(true);
+    clearInterval(timerId)
 }
 
 
@@ -520,31 +520,60 @@ function loadSaveResGame() {
     }
 }
 
+// let game = {};
+
+// setTimeout(() => {
+//     saveGame()
+// }, 10000);
+//
+// function saveGame() {
+//     let board = createElement('div', '', 'minesweeper');
+//
+//     let boardCell = document.querySelector(".minesweeper").children
+//     let saveBoard = []
+//     for (let i = 0; i < boardCell.length; i++) {
+//         saveBoard.push(boardCell[i].outerHTML);
+//     }
+//     console.log(saveBoard.join(''))
+//     board.innerHTML = saveBoard.join('')
+//     body.append(board)
+//
+//     // localStorage.setItem('game', JSON.stringify(game));
+// }
+
+// saveGame()
+// function loadGame() {
+//     let localGame = localStorage.getItem('game');
+//     if (localGame) {
+//         console.log(JSON.parse(localGame))
+//     }
+// }
+//
+// loadGame()
+
 loadSaveResGame();
-
-
 window.addEventListener('resize', go);
 
 function go() {
     let minesweeperQuery = document.querySelector('.minesweeper');
     let minesweeperCellsQuery = document.querySelectorAll('.minesweeper__cell');
-    if (window.innerWidth <= 790 && chooseLevel==="hard") {
+    if (window.innerWidth <= 790 && chooseLevel === "hard") {
         minesweeperQuery.style.minWidth = '450px';
         minesweeperQuery.style.width = '450px';
         minesweeperQuery.style.height = '450px';
         for (let cell of minesweeperCellsQuery) {
-            cell.style.width='18px';
-            cell.style.height='18px';
+            cell.style.width = '18px';
+            cell.style.height = '18px';
         }
     }
 
-    if (window.innerWidth >= 790 && chooseLevel==="hard") {
+    if (window.innerWidth >= 790 && chooseLevel === "hard") {
         minesweeperQuery.style.minWidth = '750px';
         minesweeperQuery.style.width = '750px';
         minesweeperQuery.style.height = '750px';
         for (let cell of minesweeperCellsQuery) {
-            cell.style.width='30px';
-            cell.style.height='30px';
+            cell.style.width = '30px';
+            cell.style.height = '30px';
         }
     }
 

@@ -118,7 +118,6 @@ input {
   cursor: default;
 }
 
-
 .modal {
   border: 15px solid #441d62;
   position: fixed;
@@ -132,7 +131,7 @@ input {
   z-index: 2;
   border-radius: 50px;
   top: 20%;
-  left: 40%;
+  left: calc(40vw - 90px);
   font-size: 20px;
   box-shadow: 10px 10px 5px black;
 }
@@ -264,18 +263,10 @@ input {
     left: 8%;
   }
 
-  .modal {
-    left: 25%;
-  }
-
 }
 
 
 @media (max-width: 430px) {
-
-  .modal {
-    left: 6%;
-  }
 
   .result {
     left: 3%;
